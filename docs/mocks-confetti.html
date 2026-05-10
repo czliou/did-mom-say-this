@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Confetti debug</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --persimmon: #b73e2e;
+      --cream: #f7f1e1;
+      --paper: #fdf9ef;
+      --ink: #1a1612;
+    }
+    body {
+      margin: 0;
+      padding: 20px;
+      background: var(--cream);
+      font-family: "Noto Serif TC", Georgia, serif;
+      color: var(--ink);
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    h1 { font-weight: 900; font-size: 1.4rem; margin: 0 0 4px; }
+    p.sub { margin: 0 0 14px; opacity: 0.6; font-size: 0.88rem; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    button.tier {
+      font-family: "Noto Serif TC", serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      background: var(--persimmon);
+      color: var(--cream);
+      border: none;
+      text-align: left;
+    }
+    button.tier:active { transform: translateY(2px); }
+    button.tier .count { display: block; font-size: 0.7rem; font-weight: 500; opacity: 0.85; margin-top: 4px; }
+    button.alt  { background: #5a6b41; }
+    button.test { background: #1e3a8a; }
+    button.clear{ background: #44403c; }
+
+    #log {
+      background: var(--paper);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-family: ui-monospace, "Menlo", monospace;
+      font-size: 0.78rem;
+      line-height: 1.55;
+      max-height: 380px;
+      overflow-y: auto;
+      border: 1px solid rgba(183, 62, 46, 0.14);
+    }
+    #log div { padding: 1px 0; }
+    #log .ok  { color: #166534; }
+    #log .err { color: #c41818; font-weight: 700; }
+    #log .info { color: rgba(26, 22, 18, 0.7); }
+    #log .step { color: var(--persimmon); font-weight: 700; }
+
+    .target-marker {
+      position: fixed;
+      left: 50%;
+      top: 75%;
+      transform: translate(-50%, -50%);
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: rgba(183, 62, 46, 0.4);
+      border: 2px solid var(--persimmon);
+      z-index: 998;
+      pointer-events: none;
+    }
+    .center-marker {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: rgba(30, 58, 138, 0.4);
+      border: 2px solid #1e3a8a;
+      z-index: 998;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Confetti debug</h1>
+  <p class="sub">Try buttons top → bottom. The simplest ones (fullScreen circles) should be foolproof. If those don't fire, tsParticles itself is broken.</p>
+
+  <div class="target-marker"></div>
+  <div class="center-marker"></div>
+
+  <div class="grid">
+    <button class="tier test"  data-action="fs-circle">A · fullScreen, 30 red circles<span class="count">simplest possible test</span></button>
+    <button class="tier test"  data-action="fs-image">B · fullScreen, image SVG<span class="count">tests image shape</span></button>
+    <button class="tier alt"   data-action="custom-circle">C · custom container, circles<span class="count">tests our container approach</span></button>
+    <button class="tier alt"   data-action="custom-image">D · custom container, image<span class="count">A+B+C combined</span></button>
+    <button class="tier"       data-action="real-burst">E · real burst (fixed size)<span class="count">top tier, top-left/right emitters</span></button>
+    <button class="tier clear" data-action="clear">Clear all</button>
+  </div>
+
+  <div id="log"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@3/tsparticles.bundle.min.js"></script>
+  <script>
+    const logEl = document.getElementById('log');
+    function log(kind, msg) {
+      const d = new Date();
+      const ts = `${d.toLocaleTimeString()}.${String(d.getMilliseconds()).padStart(3,'0')}`;
+      const line = document.createElement('div');
+      line.className = kind;
+      line.textContent = `[${ts}] ${msg}`;
+      logEl.prepend(line);
+    }
+    function inspectCanvas(layerEl, layerId) {
+      const canvas = layerEl?.querySelector('canvas');
+      if (!canvas) {
+        log('err', `  ⤿ NO canvas in layer #${layerId}`);
+        return;
+      }
+      const r = canvas.getBoundingClientRect();
+      const cs = getComputedStyle(canvas);
+      log('info', `  ⤿ canvas: ${canvas.width}×${canvas.height} actual: ${Math.round(r.width)}×${Math.round(r.height)} display:${cs.display} z:${cs.zIndex}`);
+    }
+    function inspectFullScreenCanvas() {
+      // tsParticles full-screen creates its own canvas at body level
+      const canvases = document.querySelectorAll('canvas');
+      log('info', `  ⤿ total <canvas> elements on page: ${canvases.length}`);
+      canvases.forEach((c, i) => {
+        const cs = getComputedStyle(c);
+        const r = c.getBoundingClientRect();
+        log('info', `  ⤿ canvas[${i}]: ${c.width}×${c.height} display:${cs.display} z:${cs.zIndex} parent:${c.parentElement?.tagName}#${c.parentElement?.id || '(no id)'}`);
+      });
+    }
+
+    log('info', '— page loaded —');
+    window.addEventListener('load', () => {
+      if (typeof tsParticles === 'undefined') {
+        log('err', 'tsParticles is undefined!');
+      } else {
+        log('ok', `tsParticles loaded v${tsParticles.version || '?'}`);
+      }
+    });
+
+    // ---- A: fullScreen + circles (simplest) ----
+    async function testFsCircle() {
+      log('step', '=== A: fullScreen + 30 red circles ===');
+      await tsParticles.load({
+        id: 'tsp-fs-circle',
+        options: {
+          fullScreen: { enable: true, zIndex: 999 },
+          particles: {
+            number: { value: 30 },
+            shape: { type: 'circle' },
+            color: { value: '#dc2626' },
+            size: { value: 12 },
+            opacity: { value: 1 },
+            move: { enable: true, speed: 4, outModes: { default: 'bounce' } },
+          },
+        },
+      });
+      log('ok', 'A load resolved');
+      setTimeout(inspectFullScreenCanvas, 50);
+    }
+
+    // ---- B: fullScreen + image shape ----
+    async function testFsImage() {
+      log('step', '=== B: fullScreen + cherry_blossom image ===');
+      await tsParticles.load({
+        id: 'tsp-fs-image',
+        options: {
+          fullScreen: { enable: true, zIndex: 999 },
+          particles: {
+            number: { value: 20 },
+            shape: { type: 'image', options: { image: [{ src: 'assets/cherry_blossom.svg', width: 32, height: 32 }] } },
+            size: { value: 22 },
+            opacity: { value: 1 },
+            move: { enable: true, speed: 4, outModes: { default: 'bounce' } },
+          },
+        },
+      });
+      log('ok', 'B load resolved');
+      setTimeout(inspectFullScreenCanvas, 50);
+    }
+
+    // ---- C: custom container + circles ----
+    async function testCustomCircle() {
+      log('step', '=== C: custom container + 30 circles ===');
+      const layerId = 'layer-' + Math.random().toString(36).slice(2, 7);
+      const layer = document.createElement('div');
+      layer.id = layerId;
+      Object.assign(layer.style, {
+        position: 'fixed', inset: '0', zIndex: '999', pointerEvents: 'none',
+      });
+      document.body.appendChild(layer);
+      log('info', `created layer #${layerId}`);
+      await tsParticles.load({
+        id: layerId,
+        options: {
+          fullScreen: { enable: false },
+          particles: {
+            number: { value: 30 },
+            shape: { type: 'circle' },
+            color: { value: '#dc2626' },
+            size: { value: 12 },
+            opacity: { value: 1 },
+            move: { enable: true, speed: 4, outModes: { default: 'bounce' } },
+          },
+        },
+      });
+      log('ok', 'C load resolved');
+      setTimeout(() => inspectCanvas(layer, layerId), 50);
+    }
+
+    // ---- D: custom container + image ----
+    async function testCustomImage() {
+      log('step', '=== D: custom container + cherry_blossom ===');
+      const layerId = 'layer-' + Math.random().toString(36).slice(2, 7);
+      const layer = document.createElement('div');
+      layer.id = layerId;
+      Object.assign(layer.style, {
+        position: 'fixed', inset: '0', zIndex: '999', pointerEvents: 'none',
+      });
+      document.body.appendChild(layer);
+      log('info', `created layer #${layerId}`);
+      await tsParticles.load({
+        id: layerId,
+        options: {
+          fullScreen: { enable: false },
+          particles: {
+            number: { value: 20 },
+            shape: { type: 'image', options: { image: [{ src: 'assets/cherry_blossom.svg', width: 32, height: 32 }] } },
+            size: { value: 22 },
+            opacity: { value: 1 },
+            move: { enable: true, speed: 4, outModes: { default: 'bounce' } },
+          },
+        },
+      });
+      log('ok', 'D load resolved');
+      setTimeout(() => inspectCanvas(layer, layerId), 50);
+    }
+
+    // ---- E: real burst (fixed: non-zero emitter size, gradual emission) ----
+    async function testRealBurst() {
+      log('step', '=== E: top-tier burst with fixed emitter size ===');
+      const layerId = 'layer-' + Math.random().toString(36).slice(2, 7);
+      const layer = document.createElement('div');
+      layer.id = layerId;
+      Object.assign(layer.style, {
+        position: 'fixed', inset: '0', zIndex: '999', pointerEvents: 'none',
+      });
+      document.body.appendChild(layer);
+      log('info', `created layer #${layerId}`);
+
+      await tsParticles.load({
+        id: layerId,
+        options: {
+          fullScreen: { enable: false },
+          detectRetina: true,
+          fpsLimit: 60,
+          particles: {
+            number: { value: 0 },
+            shape: {
+              type: 'image',
+              options: {
+                image: [
+                  { src: 'assets/cherry_blossom.svg', width: 32, height: 32 },
+                  { src: 'assets/rose.svg',           width: 32, height: 32 },
+                  { src: 'assets/tulip.svg',          width: 32, height: 32 },
+                  { src: 'assets/sparkles.svg',       width: 32, height: 32 },
+                ],
+              },
+            },
+            size:    { value: { min: 14, max: 24 } },
+            opacity: { value: 1 },
+            rotate:  { value: { min: 0, max: 360 }, animation: { enable: true, speed: 28 } },
+            move: {
+              enable: true,
+              direction: 'top',
+              speed: { min: 8, max: 18 },
+              gravity: { enable: true, acceleration: 7 },
+              straight: false,
+              outModes: { default: 'destroy' },
+            },
+          },
+          emitters: [
+            {
+              direction: 'top-left',
+              rate: { delay: 0.02, quantity: 8 },
+              position: { x: 50, y: 75 },
+              size: { width: 4, height: 4, mode: 'percent' },
+              life: { duration: 0.12, count: 1 },
+            },
+            {
+              direction: 'top-right',
+              rate: { delay: 0.02, quantity: 8 },
+              position: { x: 50, y: 75 },
+              size: { width: 4, height: 4, mode: 'percent' },
+              life: { duration: 0.12, count: 1 },
+            },
+          ],
+        },
+      });
+      log('ok', 'E load resolved');
+      setTimeout(() => inspectCanvas(layer, layerId), 50);
+      // Monitor particle count
+      let i = 0;
+      const interval = setInterval(() => {
+        const containers = tsParticles.dom();
+        const last = containers[containers.length - 1];
+        if (!last) { log('info', `[t+${i*150}ms] no containers exist`); clearInterval(interval); return; }
+        log('info', `[t+${i*150}ms] last container particles: ${last.particles?.count ?? '?'}`);
+        i++;
+        if (i > 6) clearInterval(interval);
+      }, 150);
+
+      setTimeout(() => {
+        const containers = tsParticles.dom();
+        containers.forEach(c => c.destroy());
+        document.querySelectorAll('[id^="layer-"]').forEach(el => el.remove());
+      }, 6000);
+    }
+
+    function clearAll() {
+      log('step', '=== clear all ===');
+      const containers = tsParticles.dom();
+      log('info', `destroying ${containers.length} containers`);
+      containers.forEach(c => c.destroy());
+      document.querySelectorAll('[id^="layer-"], [id^="tsp-"]').forEach(el => el.remove());
+      log('ok', 'cleared');
+    }
+
+    document.querySelectorAll('button.tier').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const action = e.currentTarget.dataset.action;
+        switch (action) {
+          case 'fs-circle':     return testFsCircle();
+          case 'fs-image':      return testFsImage();
+          case 'custom-circle': return testCustomCircle();
+          case 'custom-image':  return testCustomImage();
+          case 'real-burst':    return testRealBurst();
+          case 'clear':         return clearAll();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

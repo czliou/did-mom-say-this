@@ -1,0 +1,579 @@
+/* style.css — "Taiwan tea-house editorial" direction.
+   Single decisive face: Noto Serif TC. Cream + persimmon + tea-green + ink palette.
+   Paper cards, not glass. Square-ish buttons, not Tailwind defaults. */
+
+:root {
+  --cream:        #f7f1e1;
+  --paper:        #fdf9ef;
+  --persimmon:    #b73e2e;
+  --persimmon-2:  #d97a5e;
+  --tea-green:    #5a6b41;
+  --ink:          #1a1612;
+  --ink-soft:     rgba(26, 22, 18, 0.65);
+  --ink-faint:    rgba(26, 22, 18, 0.35);
+}
+
+html, body {
+  font-family: "Noto Serif TC", "Spectral", Georgia, "Times New Roman", serif;
+  font-feature-settings: "palt" 1;
+  color: var(--ink);
+  margin: 0;
+}
+
+body {
+  background: var(--cream);
+}
+
+/* Subtle paper-grain so the cream isn't dead flat. SVG noise, ~0 cost. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.7 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 220px 220px;
+}
+
+/* Larger / bolder for Chinese-only text blocks so they read well on phones */
+[lang="zh"], [lang="zh-Hans"], [lang="zh-Hant"], [lang="zh-CN"] {
+  font-family: "Noto Serif TC", "PingFang TC", "Microsoft JhengHei", serif;
+  font-feature-settings: "halt";
+}
+
+/* Min tap target size — guard against any button shrinking below 44x44 */
+button { min-height: 44px; }
+
+/* ===== Type system =====
+   `display` for headlines, `body` for prose, `caption` for small UI labels. */
+.display {
+  font-family: "Noto Serif TC", Georgia, serif;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.body {
+  font-family: "Noto Serif TC", Georgia, serif;
+  font-weight: 400;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+.caption {
+  font-family: "Noto Serif TC", Georgia, serif;
+  font-weight: 500;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* Asymmetric persimmon rule flanking a headline. Editorial accent. */
+.rule-flank {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding-block: 0.25rem;
+}
+.rule-flank::before,
+.rule-flank::after {
+  content: "";
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  background: var(--persimmon);
+}
+
+/* End-screen score gets a thin persimmon rule above and below it. */
+.score-rule {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  padding-block: 0.2rem;
+  position: relative;
+}
+.score-rule::before,
+.score-rule::after {
+  content: "";
+  display: block;
+  width: 100px;
+  height: 1px;
+  background: var(--persimmon);
+  opacity: 0.7;
+}
+/* margin-bottom compensates for Noto Serif TC's CJK metrics — the digits sit
+   low in the line-box, so the natural gap to the bottom rule is tighter than
+   the gap to the top rule. ~0.2rem nudges the bottom rule away to equalize. */
+.score-rule p {
+  color: var(--persimmon);
+  margin: 0 0 0.2rem;
+  line-height: 1;
+}
+
+/* Pull the player greeting close to the headline so they read as a unit. */
+#player-greeting { margin-bottom: -0.7rem; }
+
+/* ===== Buttons ===== */
+.btn-primary,
+.btn-secondary,
+.btn-tertiary {
+  font-family: "Noto Serif TC", Georgia, serif;
+  font-weight: 700;
+  font-size: 1.08rem;
+  letter-spacing: 0.01em;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 200ms ease, background 200ms ease;
+}
+
+/* Primary — persimmon fill, cream text. Tactile drop shadow, no blur. */
+.btn-primary {
+  background: var(--persimmon);
+  color: var(--cream);
+  border: none;
+  box-shadow: 0 3px 0 #8a2e22, 0 8px 18px rgba(183, 62, 46, 0.25);
+}
+.btn-primary:hover  { background: #a13726; }
+.btn-primary:active { box-shadow: 0 1px 0 #8a2e22, 0 3px 8px rgba(183, 62, 46, 0.3); transform: translateY(1px) scale(0.98); }
+
+/* Secondary — cream fill, persimmon border + text. */
+.btn-secondary {
+  background: var(--paper);
+  color: var(--persimmon);
+  border: 1.5px solid var(--persimmon);
+  box-shadow: 0 2px 0 var(--persimmon-2), 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+.btn-secondary:hover  { background: #fbeee0; }
+.btn-secondary:active { transform: translateY(1px) scale(0.98); box-shadow: 0 1px 0 var(--persimmon-2); }
+
+/* Tertiary — quiet "Next" button, ink text on cream. */
+.btn-tertiary {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink-faint);
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+.btn-tertiary:hover { background: rgba(26, 22, 18, 0.05); }
+
+/* ===== Paper card (replaces glassmorphism) ===== */
+.paper {
+  background: var(--paper);
+  border: 1px solid rgba(183, 62, 46, 0.14);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 8px 24px rgba(60, 35, 20, 0.08),
+    0 1px 3px rgba(60, 35, 20, 0.06);
+  color: var(--ink);
+}
+
+/* ===== iMessage thread card (Mac chat style) =====
+   Inline avatar + sender label + bubble. No phone chrome.
+   Reads like a single message in a chat thread. JS swaps avatar/sender on guess. */
+.imessage-card {
+  padding: 24px 18px;
+}
+
+.imsg-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.msg-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #ddd6c4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7d6f4f;
+  font-family: system-ui, "Helvetica Neue", "Apple Color Emoji", sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  overflow: hidden;
+  transition: background 250ms ease;
+}
+.msg-avatar img {
+  width: 84%;
+  height: 84%;
+  object-fit: contain;
+}
+.msg-avatar.avatar-mom   { background: rgba(183, 62, 46, 0.12); }
+.msg-avatar.avatar-other { background: #d8d2c2; color: var(--ink); }
+
+/* Mom's photo fills the avatar circle edge-to-edge (face fits the disc,
+   not letterboxed like an emoji/SVG icon). object-position focuses on her
+   face since the photo has lots of garden/lantern context she's not centered in. */
+.msg-avatar.avatar-mom > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 55% 28%;
+}
+
+.msg-stack {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  align-items: flex-start;
+}
+
+.msg-sender {
+  font-family: -apple-system, "Helvetica Neue", "Noto Serif TC", sans-serif;
+  font-size: 0.82rem;
+  color: rgba(26, 22, 18, 0.55);
+  letter-spacing: 0.02em;
+  padding-left: 4px;
+  transition: color 200ms ease;
+}
+
+.msg-bubble {
+  background: #e7e0cc;
+  color: var(--ink);
+  padding: 11px 15px;
+  border-radius: 18px 18px 18px 5px;  /* iMessage-style "tail" corner */
+  font-family: -apple-system, "Helvetica Neue", "Noto Serif TC", sans-serif;
+  font-size: 1.02rem;
+  line-height: 1.4;
+  font-weight: 500;
+  max-width: 100%;
+  text-align: left;
+  align-self: flex-start;
+}
+.msg-bubble[lang="zh-Hans"],
+.msg-bubble[lang="zh-Hant"] {
+  font-family: "Noto Serif TC", -apple-system, sans-serif;
+}
+
+/* ===== 家家 watermark — bottom-right SVG of two house silhouettes, each
+   containing the 家 character. 家家 = "home home" = Chiachia. Quiet, subtle.
+   On the round screen it moves to top-left (away from maracas top-right) so
+   the made-for-her mark stays in view during play. ===== */
+.watermark {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  top: auto;
+  left: auto;
+  z-index: 5;
+  width: 78px;
+  height: auto;
+  color: var(--persimmon);
+  opacity: 0.34;
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 300ms ease, top 350ms ease, left 350ms ease,
+              right 350ms ease, bottom 350ms ease, width 350ms ease;
+}
+body[data-screen="round"] .watermark {
+  right: auto;
+  bottom: auto;
+  top: 14px;
+  left: 14px;
+  width: 80px;
+  opacity: 0.28;
+}
+
+/* ===== Player picker (3A) ===== */
+.player-picker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.player-picker .caption { margin: 0; }
+.player-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  justify-content: center;
+  max-width: 280px;
+}
+.player-chip {
+  font-family: "Noto Serif TC", serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 0.42rem 0.95rem;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ink-soft);
+  border: 1px solid var(--ink-faint);
+  cursor: pointer;
+  transition: background 150ms, color 150ms, border-color 150ms;
+  min-height: 36px;
+}
+.player-chip:hover { background: rgba(26, 22, 18, 0.04); }
+.player-chip[aria-pressed="true"] {
+  background: var(--persimmon);
+  color: var(--cream);
+  border-color: var(--persimmon);
+}
+
+/* ===== Maracas-meter: unified streak + maracas shaker.
+   Top-right of round screen. Tiers escalate orange → red → blue as streak grows.
+   Maracas SHAKES on right answers (celebration), not on wrong. Flame fades out
+   when the streak is broken. ===== */
+.maracas-meter {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+  font-family: "Noto Serif TC", serif;
+}
+.maracas-meter.hidden { display: none; }
+
+.maracas-stack {
+  position: relative;
+  width: 44px;
+  height: 44px;
+}
+
+.maracas-img {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.18));
+}
+
+/* Tier color tints the maracas's drop-shadow into a faint glow when the
+   streak is active. Particles do the rest of the work. */
+.maracas-meter[data-tier="orange"] .maracas-img {
+  filter: drop-shadow(0 0 6px rgba(255, 138, 61, 0.55));
+}
+.maracas-meter[data-tier="red"] .maracas-img {
+  filter: drop-shadow(0 0 7px rgba(214, 32, 32, 0.6));
+}
+.maracas-meter[data-tier="blue"] .maracas-img {
+  filter: drop-shadow(0 0 8px rgba(46, 88, 200, 0.65));
+}
+
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Maracas celebrates on right — shake duration tightens as tier climbs */
+  .maracas-img.celebrate {
+    animation: maracas-celebrate 0.55s ease-out;
+  }
+  .maracas-meter[data-tier="red"]  .maracas-img.celebrate { animation-duration: 0.45s; }
+  .maracas-meter[data-tier="blue"] .maracas-img.celebrate { animation-duration: 0.4s;  }
+  @keyframes maracas-celebrate {
+    0%, 100% { transform: translate(-50%, -50%) rotate(0deg)    scale(1);    }
+    18%      { transform: translate(-50%, -50%) rotate(-22deg)  scale(1.18); }
+    36%      { transform: translate(-50%, -50%) rotate(20deg)   scale(1.18); }
+    54%      { transform: translate(-50%, -50%) rotate(-14deg)  scale(1.1);  }
+    72%      { transform: translate(-50%, -50%) rotate(12deg)   scale(1.05); }
+  }
+}
+
+/* ===== Ambient petal + chia layer =====
+   Fixed full-screen, pointer-events:none, sits behind <main>. */
+.ambient {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.petal, .chia {
+  position: absolute;
+  top: -10vh;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.petal {
+  width: 24px; height: 24px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.55;
+  filter: saturate(0.85) drop-shadow(0 1px 1px rgba(0,0,0,0.05));
+}
+.petal-cherry { background-image: url('assets/cherry_blossom.svg'); }
+.petal-rose   { background-image: url('assets/rose.svg'); }
+.petal-tulip  { background-image: url('assets/tulip.svg'); }
+
+.chia {
+  width: 4px; height: 6px;
+  background: var(--ink);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  opacity: 0.45;
+}
+
+/* Each instance picks a fall column + duration based on its --c value */
+@media (prefers-reduced-motion: no-preference) {
+  .petal {
+    animation: fall var(--dur, 16s) linear infinite;
+    animation-delay: var(--delay, 0s);
+  }
+  .chia {
+    animation: fall var(--dur, 14s) linear infinite;
+    animation-delay: var(--delay, 0s);
+  }
+
+  /* spread petals across columns + stagger timing per --c */
+  .petal[style*="--c:1"], .chia[style*="--c:1"] { left:  6%; --dur: 14s; --delay:  -2s; }
+  .petal[style*="--c:2"], .chia[style*="--c:2"] { left: 18%; --dur: 18s; --delay:  -8s; }
+  .petal[style*="--c:3"], .chia[style*="--c:3"] { left: 32%; --dur: 12s; --delay:  -1s; }
+  .petal[style*="--c:4"], .chia[style*="--c:4"] { left: 47%; --dur: 17s; --delay:  -5s; }
+  .petal[style*="--c:5"], .chia[style*="--c:5"] { left: 61%; --dur: 13s; --delay: -10s; }
+  .petal[style*="--c:6"], .chia[style*="--c:6"] { left: 74%; --dur: 19s; --delay:  -3s; }
+  .petal[style*="--c:7"]                        { left: 86%; --dur: 15s; --delay:  -7s; }
+  .petal[style*="--c:8"]                        { left: 92%; --dur: 21s; --delay: -12s; }
+
+  @keyframes fall {
+    0%   { transform: translateY(0)      rotate(0deg);   }
+    100% { transform: translateY(115vh)  rotate(540deg); }
+  }
+}
+
+/* ===== Hero illustrations ===== */
+.hero-breathing,
+.hero-bloom {
+  filter: drop-shadow(0 6px 14px rgba(183, 62, 46, 0.18));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-breathing {
+    animation: breathe 4.5s ease-in-out infinite;
+  }
+  .hero-bloom {
+    animation: bloom 0.9s cubic-bezier(0.18, 0.89, 0.32, 1.28) both;
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(1)    rotate(-1deg); }
+    50%      { transform: scale(1.05) rotate(1deg);  }
+  }
+  @keyframes bloom {
+    0%   { transform: scale(0.4) rotate(-25deg); opacity: 0; }
+    60%  { transform: scale(1.12) rotate(8deg); opacity: 1; }
+    100% { transform: scale(1)    rotate(0deg);            }
+  }
+}
+
+/* ===== Per-round feedback =====
+   "Mark both buttons" pattern (HQ Trivia / NYT Connections school).
+   - The button with the correct answer ALWAYS gets a green ✓ badge.
+   - If the user's tap was wrong, their tapped button ALSO gets a red ✕ badge.
+   - Wrong-tap also gets the shake animation.
+   - Buttons keep their fill color. */
+.guess-btn { position: relative; }
+
+.guess-btn .indicator {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%) scale(0);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: system-ui, "Apple Color Emoji", sans-serif;
+  font-weight: 900;
+  font-size: 1rem;
+  color: #fff;
+  opacity: 0;
+  pointer-events: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+}
+
+.guess-btn.indicator-correct .indicator {
+  background: #16a34a;
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+.guess-btn.indicator-correct .indicator::before { content: '✓'; }
+
+.guess-btn.indicator-wrong .indicator {
+  background: #dc2626;
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
+}
+.guess-btn.indicator-wrong .indicator::before { content: '✕'; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .guess-btn.indicator-correct .indicator,
+  .guess-btn.indicator-wrong .indicator {
+    animation: indicator-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes indicator-pop {
+    0%   { transform: translateY(-50%) scale(0);    }
+    60%  { transform: translateY(-50%) scale(1.25); }
+    100% { transform: translateY(-50%) scale(1);    }
+  }
+
+  .guess-btn.btn-shake-only {
+    animation: btn-shake 0.55s cubic-bezier(.36, .07, .19, .97);
+  }
+  @keyframes btn-shake {
+    10%, 90% { transform: translateX(-2px); }
+    20%, 80% { transform: translateX(3px); }
+    30%, 50%, 70% { transform: translateX(-7px); }
+    40%, 60% { transform: translateX(7px); }
+  }
+}
+
+/* Disabled Next — visually present but unclickable until a guess. */
+#btn-next:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
+  filter: saturate(0.4);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* fade-in on screen swap */
+  .fade-in {
+    animation: fade-in 0.4s ease-out both;
+  }
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+}
+
+/* Disabled state for guess buttons after a guess is locked in.
+   pointer-events:none blocks the :active scale-95 and any tap response. */
+.guess-btn[disabled] {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* The correct answer keeps its full color; everything else dims so the truth
+   stands out. .indicator-correct is added to the right-answer button on guess. */
+.guess-btn[disabled]:not(.indicator-correct) {
+  opacity: 0.4;
+  filter: saturate(0.4);
+}
+
+/* feedback text uses ink for readability */
+#feedback-text { color: var(--ink); }
+
+/* tsParticles target — fixed full-screen, above content but non-interactive */
+#celebration {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+}
+
+/* Maracas flame-particle layer — slight saturation lift for richer color.
+   Flame SVGs carry their own structure so we don't need blur/glow. */
+.flame-layer {
+  filter: saturate(1.2);
+}

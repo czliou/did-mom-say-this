@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Did Mom Say This?</title>
+  <meta name="description" content="A Mother's Day guessing game." />
+  <meta name="theme-color" content="#f7f1e1" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;700;900&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="relative min-h-screen antialiased">
+
+  <!-- ============== AMBIENT LAYER (behind everything) ============== -->
+  <!-- Falling petals + chia-seed dots. Pure CSS, no JS, battery-friendly. -->
+  <div class="ambient" aria-hidden="true">
+    <span class="petal petal-cherry" style="--c:1"></span>
+    <span class="petal petal-cherry" style="--c:2"></span>
+    <span class="petal petal-rose"   style="--c:3"></span>
+    <span class="petal petal-tulip"  style="--c:4"></span>
+    <span class="petal petal-cherry" style="--c:5"></span>
+    <span class="petal petal-rose"   style="--c:6"></span>
+    <span class="petal petal-cherry" style="--c:7"></span>
+    <span class="petal petal-tulip"  style="--c:8"></span>
+    <span class="chia" style="--c:1"></span>
+    <span class="chia" style="--c:2"></span>
+    <span class="chia" style="--c:3"></span>
+    <span class="chia" style="--c:4"></span>
+    <span class="chia" style="--c:5"></span>
+    <span class="chia" style="--c:6"></span>
+  </div>
+
+  <!-- ============== CELEBRATION LAYER (above content, end-screen only) ============== -->
+  <div id="celebration" aria-hidden="true"></div>
+
+  <main class="relative z-10 mx-auto flex min-h-screen max-w-md flex-col items-stretch px-6 py-8">
+
+    <!-- Maracas-meter: streak indicator. On right answer the maracas shakes;
+         if the streak is hot enough, ember particles spill out and fade.
+         Tier color goes orange → red → blue as the streak climbs. -->
+    <div id="maracas-meter" class="maracas-meter hidden" aria-hidden="true">
+      <div class="maracas-stack">
+        <img id="maracas-img" class="maracas-img" src="assets/maracas.svg" alt="" />
+      </div>
+    </div>
+
+    <!-- 家家 watermark — bottom-right. Two house silhouettes, each containing
+         the 家 character. 家家 = "home home" / Chiachia. A quiet made-for-her mark.
+         Hidden on the round screen so it doesn't compete with the maracas. -->
+    <svg id="watermark" class="watermark" viewBox="0 0 70 38" aria-hidden="true">
+      <g stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" fill="none">
+        <path d="M 5 32 L 5 16 L 14 8 L 23 16 L 23 32 Z"/>
+        <path d="M 35 32 L 35 16 L 44 8 L 53 16 L 53 32 Z"/>
+      </g>
+      <text x="14" y="26" text-anchor="middle" font-family="'Noto Serif TC', serif" font-size="12" font-weight="700" fill="currentColor">家</text>
+      <text x="44" y="26" text-anchor="middle" font-family="'Noto Serif TC', serif" font-size="12" font-weight="700" fill="currentColor">家</text>
+    </svg>
+
+    <!-- ============== START SCREEN ============== -->
+    <section id="screen-start" class="flex flex-1 flex-col items-center justify-center gap-5 text-center">
+      <img src="assets/bouquet.svg" alt="" class="hero-breathing h-32 w-32" />
+      <div class="rule-flank"><h1 class="display text-4xl">Did Mom Say This?</h1></div>
+      <p class="body max-w-xs">
+        Guess if this text came from Mom.<br/>How well do you know her?
+      </p>
+
+      <!-- Player picker (3A). Persisted in localStorage as mday:player. -->
+      <div class="player-picker">
+        <p class="caption">Who's playing?</p>
+        <div class="player-chips">
+          <button class="player-chip" data-player="Chris">Chris</button>
+          <button class="player-chip" data-player="Willy">Willy</button>
+          <button class="player-chip" data-player="Mom">Mom</button>
+          <button class="player-chip" data-player="Dad">Dad</button>
+        </div>
+      </div>
+
+      <button id="btn-start" class="btn-primary mt-2 px-12 py-4 active:scale-95 transition-transform">
+        Start
+      </button>
+
+      <p class="caption">Happy Mother's Day</p>
+    </section>
+
+    <!-- ============== ROUND SCREEN ============== -->
+    <section id="screen-round" class="hidden flex-1 flex-col gap-6">
+      <header class="relative flex items-center justify-center caption">
+        <span id="round-progress">1 / 8</span>
+      </header>
+
+      <!-- Mac iMessage thread card: inline avatar + sender + bubble.
+           No phone chrome — reads like a single message in a chat thread.
+           Avatar + sender reveal on guess (Mom · 家家, or per-decoy from texts.js). -->
+      <div id="text-card" class="paper imessage-card flex min-h-[14rem] flex-1 flex-col justify-center rounded-xl">
+        <div class="imsg-row">
+          <div id="msg-avatar" class="msg-avatar">?</div>
+          <div class="msg-stack">
+            <div id="msg-sender" class="msg-sender">Unknown</div>
+            <div id="msg-bubble" class="msg-bubble" lang="en"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <button data-guess="mom" class="guess-btn btn-primary px-6 py-5 active:scale-95 transition-transform">
+          Mom said it
+          <span class="indicator" aria-hidden="true"></span>
+        </button>
+        <button data-guess="not" class="guess-btn btn-secondary px-6 py-5 active:scale-95 transition-transform">
+          Not Mom
+          <span class="indicator" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <!-- Next is always rendered; disabled until a guess is locked in. -->
+      <div class="flex justify-center">
+        <button id="btn-next" class="btn-tertiary px-6 py-3 active:scale-95 transition-transform" disabled>
+          Next →
+        </button>
+      </div>
+    </section>
+
+    <!-- ============== END SCREEN ============== -->
+    <section id="screen-end" class="hidden flex-1 flex-col items-center justify-center gap-4 text-center">
+      <img id="end-hero" src="" alt="" class="hero-bloom h-36 w-36" />
+      <p id="player-greeting" class="caption" style="font-style: italic; opacity: 0.7;"></p>
+      <h2 id="end-headline" class="display text-3xl leading-tight"></h2>
+      <div class="score-rule"><p id="end-score" class="display text-5xl"></p></div>
+      <p id="end-message" class="body max-w-xs"></p>
+      <button id="btn-replay" class="btn-primary mt-2 px-12 py-4 active:scale-95 transition-transform">
+        Play again
+      </button>
+    </section>
+
+  </main>
+
+  <!-- tsParticles full bundle (~28 KB gzip, MIT) — handles the end-screen bursts -->
+  <script src="https://cdn.jsdelivr.net/npm/tsparticles@3/tsparticles.bundle.min.js"></script>
+  <!-- canvas-confetti (~4 KB, ISC) — purpose-built for the final-screen confetti pop.
+       tsParticles emitters were not firing reliably with compound directions. -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <!-- texts.js must load before app.js (app.js references TEXTS) -->
+  <script src="texts.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

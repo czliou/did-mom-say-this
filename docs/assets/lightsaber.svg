@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- glow halo -->
+  <rect x="11" y="2" width="10" height="20" fill="#7af07a" opacity="0.32" rx="2"/>
+  <!-- beam -->
+  <rect x="14" y="3" width="4" height="18" fill="#7af07a" rx="1"/>
+  <!-- beam highlight -->
+  <rect x="15" y="3" width="1.2" height="18" fill="#ffffff" opacity="0.55"/>
+  <!-- hilt -->
+  <rect x="13" y="21" width="6" height="2" fill="#3a3a3a"/>
+  <rect x="13.5" y="23" width="5" height="6" fill="#6e6e6e"/>
+  <rect x="13.5" y="25" width="5" height="0.8" fill="#3a3a3a"/>
+  <rect x="13.5" y="27" width="5" height="0.8" fill="#3a3a3a"/>
+  <rect x="13.5" y="29" width="5" height="0.8" fill="#3a3a3a"/>
+</svg>

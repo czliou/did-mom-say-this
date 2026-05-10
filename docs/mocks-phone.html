@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Phone-card revision mocks</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --persimmon: #b73e2e;
+      --cream: #f7f1e1;
+      --paper: #fdf9ef;
+      --ink: #1a1612;
+      --ink-soft: rgba(26, 22, 18, 0.55);
+      --ink-faint: rgba(26, 22, 18, 0.3);
+      --bubble: #e7e0cc;
+    }
+
+    body {
+      margin: 0;
+      padding: 32px 16px 64px;
+      background: var(--cream);
+      font-family: "Noto Serif TC", Georgia, serif;
+      color: var(--ink);
+    }
+
+    .page-title {
+      max-width: 600px;
+      margin: 0 auto 8px;
+      font-weight: 900;
+      font-size: 1.6rem;
+    }
+    .page-sub {
+      max-width: 600px;
+      margin: 0 auto 40px;
+      opacity: 0.65;
+      font-size: 0.95rem;
+    }
+
+    .mock {
+      max-width: 600px;
+      margin: 0 auto 56px;
+    }
+    .mock-title {
+      font-weight: 700;
+      font-size: 1.15rem;
+      margin: 0 0 4px;
+      color: var(--persimmon);
+    }
+    .mock-blurb {
+      margin: 0 0 18px;
+      opacity: 0.65;
+      font-size: 0.9rem;
+    }
+    .state-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .state-label {
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.7rem;
+      opacity: 0.55;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    @media (max-width: 600px) {
+      .state-row { grid-template-columns: 1fr; }
+    }
+
+    /* Common paper card base */
+    .card {
+      background: var(--paper);
+      border: 1px solid rgba(183, 62, 46, 0.14);
+      border-radius: 14px;
+      min-height: 240px;
+      box-shadow: 0 8px 24px rgba(60, 35, 20, 0.06);
+      overflow: hidden;
+    }
+
+    /* Common bubble */
+    .bubble {
+      background: var(--bubble);
+      color: var(--ink);
+      padding: 11px 15px;
+      border-radius: 18px 18px 18px 5px;
+      font-family: -apple-system, "Helvetica Neue", "Noto Serif TC", sans-serif;
+      font-size: 0.98rem;
+      line-height: 1.4;
+      font-weight: 500;
+      max-width: 280px;
+      align-self: flex-start;
+    }
+
+    /* Common avatar */
+    .avatar-base {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: #ddd6c4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #7d6f4f;
+      font-family: system-ui, "Helvetica Neue", "Apple Color Emoji", sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      overflow: hidden;
+    }
+    .avatar-base.mom { background: rgba(183, 62, 46, 0.12); }
+    .avatar-base img { width: 84%; height: 84%; object-fit: contain; }
+
+    /* ============ V1 — Mac iMessage thread (matches reference) ============ */
+    .v1 {
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .v1 .msg-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .v1 .stack {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-start;
+      min-width: 0;
+    }
+    .v1 .sender {
+      font-family: -apple-system, "Helvetica Neue", sans-serif;
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      letter-spacing: 0.02em;
+      padding-left: 4px;
+    }
+
+    /* ============ V2 — Refined phone frame (tighter than current) ============ */
+    .v2 {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .v2 .statusbar {
+      padding: 6px 16px 3px;
+      display: flex;
+      justify-content: space-between;
+      font-family: -apple-system, sans-serif;
+      font-size: 0.66rem;
+      font-weight: 600;
+      color: var(--ink-soft);
+    }
+    .v2 .header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px 8px;
+      border-bottom: 1px solid rgba(26,22,18,0.08);
+      font-family: -apple-system, sans-serif;
+      font-size: 0.9rem;
+    }
+    .v2 .header .back { color: var(--persimmon); font-size: 1.3rem; line-height: 0.6; }
+    .v2 .header .info { margin-left: auto; color: var(--persimmon); opacity: 0.55; font-size: 0.95rem; }
+    .v2 .header-avatar-sm {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #ddd6c4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #7d6f4f;
+      font-family: system-ui, "Apple Color Emoji", sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      overflow: hidden;
+    }
+    .v2 .header-avatar-sm.mom { background: rgba(183, 62, 46, 0.12); }
+    .v2 .header-avatar-sm img { width: 84%; height: 84%; object-fit: contain; }
+    .v2 .body {
+      padding: 14px 14px 18px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+    }
+    .v2 .stamp {
+      text-align: center;
+      font-family: -apple-system, sans-serif;
+      font-size: 0.7rem;
+      color: var(--ink-faint);
+      letter-spacing: 0.02em;
+    }
+
+    /* ============ V3 — Mini thread (ghost prior bubbles) ============ */
+    .v3 {
+      padding: 18px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: center;
+    }
+    .v3 .msg-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .v3 .ghost {
+      opacity: 0.35;
+      filter: blur(0.4px);
+    }
+    .v3 .ghost .bubble {
+      background: var(--bubble);
+      color: var(--ink-soft);
+    }
+    .v3 .stack {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-start;
+      min-width: 0;
+    }
+    .v3 .sender {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      letter-spacing: 0.02em;
+      padding-left: 4px;
+    }
+
+    /* ============ V4 — Mac iMessage with chat window header ============ */
+    .v4 {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .v4 .chrome {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(26,22,18,0.08);
+      background: rgba(247, 241, 225, 0.5);
+    }
+    .v4 .traffic {
+      display: flex;
+      gap: 5px;
+    }
+    .v4 .traffic span {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+    }
+    .v4 .traffic .r { background: #ed6a5e; }
+    .v4 .traffic .y { background: #f5bf4f; }
+    .v4 .traffic .g { background: #62c554; }
+    .v4 .chat-title {
+      margin: 0 auto;
+      font-family: -apple-system, sans-serif;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--ink-soft);
+    }
+    .v4 .body {
+      padding: 18px 14px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .v4 .msg-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .v4 .stack {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      align-items: flex-start;
+      min-width: 0;
+    }
+    .v4 .sender {
+      font-family: -apple-system, sans-serif;
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      letter-spacing: 0.02em;
+      padding-left: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="page-title">Phone-card revision mocks</h1>
+  <p class="page-sub">Current implementation has a phone-frame statusbar that feels off against the reference Mac iMessage thread. Four refinements below.</p>
+
+  <!-- ============ V1 ============ -->
+  <section class="mock">
+    <h2 class="mock-title">1 · Mac iMessage thread (matches your reference) <span style="color: #16a34a; font-size: 0.85rem;">— Recommended</span></h2>
+    <p class="mock-blurb">Drop all phone chrome. Just inline: avatar + sender label + bubble, floating in the paper card like a single message in a chat thread. Matches the Mac iMessage screenshot you shared.</p>
+    <div class="state-row">
+      <div>
+        <div class="state-label">during round</div>
+        <div class="card v1">
+          <div class="msg-row">
+            <div class="avatar-base">?</div>
+            <div class="stack">
+              <div class="sender">Unknown</div>
+              <div class="bubble">What. You charged your checked bags to my card. Smooth.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="state-label">after guess (was Mom)</div>
+        <div class="card v1">
+          <div class="msg-row">
+            <div class="avatar-base mom"><img src="assets/bouquet.svg" alt=""></div>
+            <div class="stack">
+              <div class="sender">Mom · 家家</div>
+              <div class="bubble">What. You charged your checked bags to my card. Smooth.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ V2 ============ -->
+  <section class="mock">
+    <h2 class="mock-title">2 · Refined phone frame (tightened current)</h2>
+    <p class="mock-blurb">Keep the phone chrome but tighten: smaller status bar, smaller avatar in header, add a centered "today" timestamp above the bubble. Less empty space.</p>
+    <div class="state-row">
+      <div>
+        <div class="state-label">during round</div>
+        <div class="card v2">
+          <div class="statusbar"><span>9:41</span><span>···</span></div>
+          <div class="header">
+            <span class="back">‹</span>
+            <span class="header-avatar-sm">?</span>
+            <span>Unknown</span>
+            <span class="info">ⓘ</span>
+          </div>
+          <div class="body">
+            <div class="stamp">Today 8:12 PM</div>
+            <div class="bubble">What. You charged your checked bags to my card. Smooth.</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="state-label">after guess</div>
+        <div class="card v2">
+          <div class="statusbar"><span>9:41</span><span>···</span></div>
+          <div class="header">
+            <span class="back">‹</span>
+            <span class="header-avatar-sm mom"><img src="assets/bouquet.svg" alt=""></span>
+            <span>Mom · 家家</span>
+            <span class="info">ⓘ</span>
+          </div>
+          <div class="body">
+            <div class="stamp">Today 8:12 PM</div>
+            <div class="bubble">What. You charged your checked bags to my card. Smooth.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ V3 ============ -->
+  <section class="mock">
+    <h2 class="mock-title">3 · Mini thread (ghost context)</h2>
+    <p class="mock-blurb">No phone chrome. Inline avatar+sender+bubble like V1, but with 1–2 faded "previous" bubbles above to suggest you're mid-conversation. Reads more like an actual chat thread instead of a single floating message.</p>
+    <div class="state-row">
+      <div>
+        <div class="state-label">during round</div>
+        <div class="card v3">
+          <div class="msg-row ghost">
+            <div class="avatar-base"></div>
+            <div class="stack">
+              <div class="bubble" style="max-width: 180px;">─ ─ ─ ─ ─ ─ ─ ─</div>
+            </div>
+          </div>
+          <div class="msg-row">
+            <div class="avatar-base">?</div>
+            <div class="stack">
+              <div class="sender">Unknown</div>
+              <div class="bubble">What. You charged your checked bags to my card. Smooth.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="state-label">after guess</div>
+        <div class="card v3">
+          <div class="msg-row ghost">
+            <div class="avatar-base"></div>
+            <div class="stack">
+              <div class="bubble" style="max-width: 180px;">─ ─ ─ ─ ─ ─ ─ ─</div>
+            </div>
+          </div>
+          <div class="msg-row">
+            <div class="avatar-base mom"><img src="assets/bouquet.svg" alt=""></div>
+            <div class="stack">
+              <div class="sender">Mom · 家家</div>
+              <div class="bubble">What. You charged your checked bags to my card. Smooth.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ V4 ============ -->
+  <section class="mock">
+    <h2 class="mock-title">4 · Mac iMessage with window chrome</h2>
+    <p class="mock-blurb">Inline message like V1 but adds a faux Mac window header on top — traffic-light circles + "iMessage" title. Looks like a screenshot of a chat window.</p>
+    <div class="state-row">
+      <div>
+        <div class="state-label">during round</div>
+        <div class="card v4">
+          <div class="chrome">
+            <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+            <div class="chat-title">iMessage</div>
+          </div>
+          <div class="body">
+            <div class="msg-row">
+              <div class="avatar-base">?</div>
+              <div class="stack">
+                <div class="sender">Unknown</div>
+                <div class="bubble">What. You charged your checked bags to my card. Smooth.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="state-label">after guess</div>
+        <div class="card v4">
+          <div class="chrome">
+            <div class="traffic"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+            <div class="chat-title">iMessage</div>
+          </div>
+          <div class="body">
+            <div class="msg-row">
+              <div class="avatar-base mom"><img src="assets/bouquet.svg" alt=""></div>
+              <div class="stack">
+                <div class="sender">Mom · 家家</div>
+                <div class="bubble">What. You charged your checked bags to my card. Smooth.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

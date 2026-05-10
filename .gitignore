@@ -1,0 +1,21 @@
+# Privacy: never ship anything under data/ — it all derives from chat.db.
+# The shipped artifact is the web app only (texts.js is the curated, user-approved bank).
+data/
+
+# Privacy: these contain Mom's real phone/email or working notes — local-only.
+scripts/
+PLANNING.md
+PROGRESS.md
+IDEAS.md
+RESEARCH_VISUALS.md
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Local-only scratch
+scratch/
+*.local.*

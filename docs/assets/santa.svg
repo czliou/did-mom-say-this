@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- red hat cone, leaning slightly left so the pom hangs over -->
+  <path d="M 6 22 L 26 22 L 23 10 Q 20 6 13 10 L 6 22 Z" fill="#c41818"/>
+  <!-- subtle inner shadow on hat -->
+  <path d="M 6 22 L 12 14 Q 16 17 20 14 L 23 22 Z" fill="#a31010" opacity="0.5"/>
+  <!-- white fur trim at the base -->
+  <rect x="5" y="21" width="22" height="4.5" rx="2.25" fill="#ffffff"/>
+  <!-- tiny dots in the trim for fuzziness -->
+  <circle cx="9"  cy="23.5" r="0.6" fill="#e8e8e8"/>
+  <circle cx="16" cy="23.5" r="0.6" fill="#e8e8e8"/>
+  <circle cx="23" cy="23.5" r="0.6" fill="#e8e8e8"/>
+  <!-- pom-pom on top -->
+  <circle cx="13" cy="8" r="3.2" fill="#ffffff"/>
+</svg>
