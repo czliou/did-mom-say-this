@@ -22,14 +22,14 @@ const TEXTS = [
   { text: "One of my classmates who I was not even close to ask me to be one of the brides maid.  Then I found out I had to chip in for party and wedding expenses.   Hell no.  I said no after that.", isMom: true, lang: "en" },
 
   // --- decoys (NOT mom) ---
-  { text: "Ajito has a 45 min wait. 🙄", isMom: false, lang: "en", sender: "Claude", icon: "assets/claude.svg" },
-  { text: "New boba on Stevens Creek.   Long line.  Of course.  😆", isMom: false, lang: "en", sender: "Claude", icon: "assets/claude.svg" },
+  { text: "Ajito has a 45 min wait. 🙄", isMom: false, lang: "en", sender: "Ajito", icon: "assets/ramen.svg" },
+  { text: "New boba on Stevens Creek.   Long line.  Of course.  😆", isMom: false, lang: "en", sender: "Tea Top", icon: "assets/boba.svg" },
   { text: "Mitsuwa had sashimi on sale.   Got 3 packs.   Dinner sorted.", isMom: false, lang: "en", sender: "Claude", icon: "assets/claude.svg" },
   { text: "Make sure to charge your phone before the flight.  And bring a power bank.", isMom: false, lang: "en", sender: "Claude", icon: "assets/claude.svg" },
-  { text: "Take an umbrella tomorrow.   It's supposed to rain all day.  ☔", isMom: false, lang: "en", sender: "Claude", icon: "assets/claude.svg" },
+  { text: "Take an umbrella tomorrow.   It's supposed to rain all day.  ☔", isMom: false, lang: "en", sender: "Channel 49", icon: "assets/channel49.svg" },
   { text: "Back in Taiwan we walked 2km to school.   In rain.   Be grateful.", isMom: false, lang: "en", sender: "Claude", icon: "assets/claude.svg" },
-  { text: "Monday night football watch party at ours for 49ers", isMom: false, lang: "en", sender: "The Boys", icon: "assets/channel49.svg" },
+  { text: "Monday night football watch party at ours for 49ers", isMom: false, lang: "en", sender: "The Boys", icon: "🍺" },
   { text: "Are you inviting anyone to the Christmas party?", isMom: false, lang: "en", sender: "Santa Clause", icon: "assets/santa.svg" },
   { text: "It's a Jedi training to sleep with your eye open. May the force be with you.", isMom: false, lang: "en", sender: "Yoda", icon: "assets/lightsaber.svg" },
-  { text: "I found out a few weeks ago and crashed out at the office lmao", isMom: false, lang: "en", sender: "Tommy", icon: "💀" },
+  { text: "I found out a few weeks ago and crashed out at the office lmao", isMom: false, lang: "en", sender: "Tommy", icon: "assets/briefcase.svg" },
 ];

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Steam wisps -->
+  <path d="M 11 4 Q 10 7, 12 9" stroke="#a8a39a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <path d="M 16 3 Q 15 6, 17 8" stroke="#a8a39a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <path d="M 21 4 Q 20 7, 22 9" stroke="#a8a39a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+  <!-- Bowl body -->
+  <path d="M 3 13 L 29 13 Q 28 28, 16 28 Q 4 28, 3 13 Z" fill="#b73e2e"/>
+  <!-- Broth/rim -->
+  <ellipse cx="16" cy="13" rx="13" ry="2" fill="#e9b78f"/>
+  <!-- Noodles squiggle -->
+  <path d="M 7 13 Q 10 11, 13 12.5 Q 16 14, 19 12 Q 22 10.5, 25 13" stroke="#fdf9ef" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+</svg>
