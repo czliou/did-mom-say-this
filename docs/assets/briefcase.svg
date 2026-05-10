@@ -2,7 +2,7 @@
   <!-- Handle -->
   <path d="M 12 9 L 12 6.5 Q 12 5.5, 13 5.5 L 19 5.5 Q 20 5.5, 20 6.5 L 20 9" stroke="#1a1612" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
   <!-- Body -->
-  <rect x="4.5" y="9" width="23" height="18" rx="2" fill="#5a6b41"/>
+  <rect x="4.5" y="9" width="23" height="18" rx="2" fill="#7a4f2f"/>
   <!-- Center divider/seam -->
   <line x1="4.5" y1="17" x2="27.5" y2="17" stroke="#1a1612" stroke-width="0.8" opacity="0.4"/>
   <!-- Clasp -->
